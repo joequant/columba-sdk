@@ -3,7 +3,6 @@
 
 import zmq = require('zeromq')
 import { encode, decode } from '@msgpack/msgpack'
-import 'regenerator-runtime/runtime'
 import EventEmitter = require('events')
 
 export default class FlockServer {
