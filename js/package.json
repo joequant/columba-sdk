@@ -1,6 +1,7 @@
 {
-    "name": "pigeon-blockchain",
+    "name": "pigeon-sdk-js",
     "scripts": {
+        "prepare": "tsc --build",
         "build": "tsc --build",
         "clean": "tsc --build --clean",
         "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json",
