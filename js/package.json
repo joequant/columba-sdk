@@ -9,6 +9,9 @@
         "start": "./server.js &",
         "test": "mocha"
     },
+    "bin": {
+        "flock-cli": "./flock-cli.js"
+    },
     "dependencies": {
         "@msgpack/msgpack": "^2.7.1",
         "@types/yargs": "^17.0.8",
