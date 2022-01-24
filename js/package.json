@@ -5,8 +5,9 @@
         "build": "tsc --build",
         "clean": "tsc --build --clean",
         "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json",
-        "lint": "eslint --fix *.ts",
-        "start": "./server.js &"
+        "lint": "eslint --fix *.ts test/*.js",
+        "start": "./server.js &",
+        "test": "mocha"
     },
     "dependencies": {
         "@msgpack/msgpack": "^2.7.1",

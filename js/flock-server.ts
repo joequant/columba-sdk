@@ -30,11 +30,14 @@ export default class FlockServer {
       await this.initialize()
     }
     for await (const [msg] of this.replySock) {
-      const inobj: any = decode(msg)
-      if (!this.emitter.emit(inobj.cmd, inobj)) {
+      if (!await this.processTxn(decode(msg))) {
         this.send('unknown command')
       }
     }
+  }
+
+  async processTxn (inobj: any) : Promise<boolean> {
+    return this.emitter.emit(inobj.cmd, inobj)
   }
 
   async send (data: any) {
