@@ -4,6 +4,8 @@
 import zmq = require('zeromq')
 import { encode, decode } from '@msgpack/msgpack'
 import EventEmitter = require('events')
+import yargs from 'yargs/yargs'
+import { hideBin } from 'yargs/helpers'
 
 export default class FlockServer {
   replySockId: string
@@ -51,5 +53,26 @@ export default class FlockServer {
 
   async shutdown () : Promise<void> {
     process.exit(0)
+  }
+
+  static startup (argv: any) : void {
+  }
+
+  static runServer () : void {
+    const me = this
+    // eslint-disable-next-line no-unused-vars
+    const argv = yargs(hideBin(process.argv)).command(
+      '$0 [port]',
+      'the default command',
+      (yargs) => {
+        return yargs.positional('port', {
+          describe: 'port value',
+          type: 'string',
+          default: 'tcp://127.0.0.1:3000'
+        })
+      },
+      (argv) => {
+        me.startup(argv)
+      }).argv
   }
 }
