@@ -67,14 +67,14 @@ export default class FlockServer {
     const argv = yargs(hideBin(process.argv)).command(
       '$0 [port]',
       'the default command',
-      (yargs) => {
+      (yargs: any) => {
         return yargs.positional('port', {
           describe: 'port value',
           type: 'string',
           default: 'tcp://127.0.0.1:3000'
         })
       },
-      (argv) => {
+      (argv: any) => {
         me.startup(argv)
       }).argv
   }
