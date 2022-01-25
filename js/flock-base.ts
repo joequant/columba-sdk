@@ -23,6 +23,9 @@ export default class FlockServer {
 
   async initialize (): Promise<void> {
     await this.replySock.bind(this.replySockId)
+    this.emitter.on('echo', async (inobj: any): Promise<void> => {
+      this.send(inobj.data)
+    })
   }
 
   async run () : Promise<void> {

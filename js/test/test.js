@@ -17,5 +17,9 @@ describe('Manager', function () {
     it('processTxn', async function () {
       assert.ok(!await app.processTxn({ cmd: 'foo', data: 'bar' }))
     })
+    it('echo', async function () {
+      const r = await cli.send('echo hello world')
+      assert.equal(r, 'hello world')
+    })
   })
 })
