@@ -1,10 +1,12 @@
 const assert = require('assert')
-const FlockServer = require('../flock-server').default
+const FlockBase = require('../flock-base').default
+const FlockCli = require('../flock-cli')
 
 describe('Manager', function () {
   let app
   before(async function () {
-    app = new FlockServer('tcp://127.0.0.1:3000')
+    app = new FlockBase('tcp://127.0.0.1:3000')
+    cli = new FlockCli.FlockCli('tcp://127.0.0.1:3000')
     app.run()
   })
   after(function () {

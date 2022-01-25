@@ -34,7 +34,7 @@ function mySplit (
   return parts.slice(0, n - 1).concat([parts.slice(n - 1).join(delimiter)])
 }
 
-export class Cli {
+export class FlockCli {
   sock: zmq.Request;
   rl
   constructor (
@@ -88,7 +88,7 @@ if (typeof require !== 'undefined' && require.main === module) {
       })
     },
     (argv) => {
-      const cli = new Cli(argv.port)
+      const cli = new FlockCli(argv.port)
       cli.run()
     }).argv
 }
