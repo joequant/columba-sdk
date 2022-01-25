@@ -3,7 +3,7 @@
 
 import zmq = require('zeromq')
 import readline = require('readline');
-import yargs from 'yargs/yargs'
+import yargs = require('yargs/yargs')
 import { hideBin } from 'yargs/helpers'
 import { encode, decode } from '@msgpack/msgpack'
 import { createLogger, format, transports } from 'winston'

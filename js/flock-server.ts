@@ -4,7 +4,7 @@
 import zmq = require('zeromq')
 import { encode, decode } from '@msgpack/msgpack'
 import EventEmitter = require('events')
-import yargs from 'yargs/yargs'
+import yargs = require('yargs/yargs')
 import { hideBin } from 'yargs/helpers'
 
 export default class FlockServer {
