@@ -32,8 +32,8 @@ export default class FlockServer {
     })
   }
 
-  version() : string {
-    return "FlockBase"
+  version () : string {
+    return 'FlockBase'
   }
 
   async run () : Promise<void> {

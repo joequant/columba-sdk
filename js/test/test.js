@@ -3,10 +3,11 @@ const FlockBase = require('../flock-base').default
 const FlockCli = require('../flock-cli')
 
 describe('Manager', function () {
-  let app
+  let app, cli
   before(async function () {
     app = new FlockBase('tcp://127.0.0.1:3000')
-    cli = new FlockCli.FlockCli('tcp://127.0.0.1:3000')
+    cli = new FlockCli.FlockCli()
+    cli.port('tcp://127.0.0.1:3000')
     app.run()
   })
   after(function () {

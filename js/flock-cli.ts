@@ -35,14 +35,12 @@ function mySplit (
 }
 
 export class FlockCli {
-  sock: zmq.Request;
+  sockList: any
+  sock: zmq.Request
   rl
-  constructor (
-    connectId: string
-  ) {
+  constructor () {
     this.sock = new zmq.Request()
-    this.sock.connect(connectId)
-    logger.log('info', 'Cli bound to %s', connectId)
+    this.sockList = {}
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout
@@ -61,6 +59,18 @@ export class FlockCli {
     return decode(result)
   }
 
+  async port (port: string): Promise<any> {
+    if (port.match(/^[0-9]+/)) {
+      port = 'tcp://127.0.0.1/' + port
+    }
+    logger.log('info', 'Cli bound to %s', port)
+    if (this.sockList[port] === undefined) {
+      this.sockList[port] = new zmq.Request()
+      this.sockList[port].connect(port)
+    }
+    this.sock = this.sockList[port]
+  }
+
   async readline (): Promise<void> {
     const me = this
     this.rl.question('Command: ', async function (answer) {
@@ -72,7 +82,7 @@ export class FlockCli {
 
   async run () : Promise<void> {
     const result = await this.send('version')
-    console.log("connect to " + result)
+    console.log('connect to ' + result)
     await this.readline()
   }
 }
@@ -90,7 +100,7 @@ if (typeof require !== 'undefined' && require.main === module) {
       })
     },
     (argv) => {
-      const cli = new FlockCli(argv.port)
-      cli.run()
+      const cli = new FlockCli()
+      cli.port(argv.port).then(() => cli.run())
     }).argv
 }
