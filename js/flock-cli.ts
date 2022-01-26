@@ -49,6 +49,10 @@ export class FlockCli {
 
   async send (command: string): Promise<any> {
     const [cmdfull, data] = mySplit(command, ' ', 2)
+    if (cmdfull === '.port') {
+      this.port(data)
+      return ''
+    }
     const [cmd, subcmd] = mySplit(cmdfull, '.', 2)
     await this.sock.send(encode({
       cmd: cmd,
