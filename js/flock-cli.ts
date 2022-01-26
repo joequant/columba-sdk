@@ -70,8 +70,10 @@ export class FlockCli {
     })
   }
 
-  run () : void {
-    this.readline()
+  async run () : Promise<void> {
+    const result = await this.send('version')
+    console.log("connect to " + result)
+    await this.readline()
   }
 }
 

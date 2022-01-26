@@ -14,12 +14,18 @@ describe('Manager', function () {
   })
 
   describe('test1', function () {
-    it('processTxn', async function () {
+    it('processTxn', async () => {
       assert.ok(!await app.processTxn({ cmd: 'foo', data: 'bar' }))
     })
-    it('echo', async function () {
+
+    it('echo', async () => {
       const r = await cli.send('echo hello world')
       assert.equal(r, 'hello world')
+    })
+
+    it('version', async () => {
+      const r = await cli.send('version')
+      assert.equal(r, 'FlockBase')
     })
   })
 })

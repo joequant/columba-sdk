@@ -26,6 +26,14 @@ export default class FlockServer {
     this.emitter.on('echo', async (inobj: any): Promise<void> => {
       this.send(inobj.data)
     })
+
+    this.emitter.on('version', async (inobj: any): Promise<void> => {
+      this.send(this.version())
+    })
+  }
+
+  version() : string {
+    return "FlockBase"
   }
 
   async run () : Promise<void> {
