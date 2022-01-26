@@ -7,8 +7,8 @@ describe('Manager', function () {
   before(async function () {
     app = new FlockBase('tcp://127.0.0.1:3000')
     cli = new FlockCli.FlockCli()
-    cli.port('tcp://127.0.0.1:3000')
     app.run()
+    await cli.portConnect('default', 'tcp://127.0.0.1:3000')
   })
   after(function () {
     app.shutdown()
@@ -28,5 +28,10 @@ describe('Manager', function () {
       const r = await cli.send('version')
       assert.equal(r, 'FlockBase')
     })
+
+    /*    it('.port-list', async () => {
+      const r = await cli.send('.port-list')
+      assert.equal(r.default, 'tcp://127.0.0.1:3000')
+    }) */
   })
 })
