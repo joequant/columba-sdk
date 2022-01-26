@@ -7,7 +7,7 @@ import EventEmitter = require('events')
 import yargs = require('yargs/yargs')
 import { hideBin } from 'yargs/helpers'
 
-export default class FlockServer {
+export class FlockBase {
   replySockId: string
   replySock: zmq.Reply
   emitter: EventEmitter
