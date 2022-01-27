@@ -37,6 +37,7 @@ function mySplit (
 export class FlockCli {
   sockList: any
   ports: Map<string, string>
+  readInput: boolean
   rl
   constructor () {
     this.sockList = {}
@@ -45,11 +46,16 @@ export class FlockCli {
       input: process.stdin,
       output: process.stdout
     })
+    this.readInput = true
   }
 
   async send (command: string): Promise<any> {
     const [cmdfull, data] = mySplit(command, ' ', 2)
-    if (cmdfull === '.port-connect') {
+    if (cmdfull === '.exit') {
+      this.portDisconnectAll()
+      this.readInput = false
+      return ''
+    } else if (cmdfull === '.port-connect') {
       let [name, port] = mySplit(data, ' ', 2)
       if (port.match(/^[0-9]+/)) {
         port = 'tcp://127.0.0.1:' + port
@@ -98,6 +104,12 @@ export class FlockCli {
     }
   }
 
+  async portDisconnectAll (): Promise<any> {
+    for (const name in this.ports.keys()) {
+      this.portDisconnect(name)
+    }
+  }
+
   async portList (): Promise<Object> {
     return Object.fromEntries(this.ports)
   }
@@ -107,7 +119,9 @@ export class FlockCli {
     this.rl.question('Command: ', async function (answer) {
       const result = await me.send(answer)
       console.log(result)
-      me.readline()
+      if (me.readInput) {
+        me.readline()
+      }
     })
   }
 
