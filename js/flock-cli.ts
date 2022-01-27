@@ -105,7 +105,8 @@ export class FlockCli {
   async readline (): Promise<void> {
     const me = this
     this.rl.question('Command: ', async function (answer) {
-      await me.send(answer)
+      const result = await me.send(answer)
+      console.log(result)
       me.readline()
     })
   }
