@@ -1,12 +1,14 @@
-const assert = require('assert')
-const FlockBase = require('../flock-base')
-const FlockCli = require('../flock-cli')
+import { FlockBase } from '../flock-base'
+import { FlockCli } from '../flock-cli'
+import assert from 'assert'
 
-describe('Manager', function () {
-  let app, cli
+describe('FlockBase', function () {
+  let app : FlockBase, cli: FlockCli
   before(async function () {
-    app = new FlockBase.FlockBase('tcp://127.0.0.1:3000')
-    cli = new FlockCli.FlockCli()
+    app = new FlockBase('tcp://127.0.0.1:3000')
+    cli = new FlockCli()
+    assert.ok(app !== undefined)
+    assert.ok(cli !== undefined)
     app.run()
     await cli.portConnect('default', 'tcp://127.0.0.1:3000')
   })

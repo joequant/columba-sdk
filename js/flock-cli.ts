@@ -52,7 +52,7 @@ export class FlockCli {
     if (cmdfull === '.port-connect') {
       let [name, port] = mySplit(data, ' ', 2)
       if (port.match(/^[0-9]+/)) {
-        port = 'tcp://127.0.0.1/' + port
+        port = 'tcp://127.0.0.1:' + port
       }
       return await this.portConnect(name, port)
     } else if (cmdfull === '.port-disconnect') {
