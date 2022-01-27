@@ -35,12 +35,12 @@ function mySplit (
 }
 
 export class FlockCli {
-  sockList: any
+  sockList: Map<string, any>
   ports: Map<string, string>
   readInput: boolean
   rl
   constructor () {
-    this.sockList = {}
+    this.sockList = new Map<string, any>()
     this.ports = new Map<string, string>()
     this.rl = readline.createInterface({
       input: process.stdin,
@@ -68,38 +68,41 @@ export class FlockCli {
     }
 
     const [cmd2, subcmd] = mySplit(cmdfull, '.', 2)
-    let [cmd, port] = mySplit(cmd2, '/', 2)
-    if (port === '') {
+    let cmd: string, port: string
+    if (cmd2.includes('/')) {
+      [port, cmd] = mySplit(cmd2, '/', 2)
+    } else {
+      cmd = cmd2
       port = 'default'
     }
-    await this.sockList[port].send(encode({
+    if (this.sockList.get(port) === undefined) {
+      return 'no connection'
+    }
+    await this.sockList.get(port).send(encode({
       cmd: cmd,
       subcmd: subcmd,
       data: data
     }))
-    const [result] = await this.sockList[port].receive()
+    const [result] = await this.sockList.get(port).receive()
     return decode(result)
   }
 
   async portConnect (name: string, port: string): Promise<any> {
-    if (port.match(/^[0-9]+$/)) {
-      port = 'tcp://127.0.0.1/' + port
-    }
-    if (this.sockList[name] === undefined) {
-      this.sockList[name] = new zmq.Request()
+    if (this.sockList.get(name) === undefined) {
+      this.sockList.set(name, new zmq.Request())
     } else {
-      this.sockList[name].disconnect()
+      this.sockList.get(name).disconnect()
     }
     this.ports.set(name, port)
-    this.sockList[name].connect(port)
+    this.sockList.get(name).connect(port)
     logger.log('info', 'Cli %s bound to %s', name, port)
   }
 
   async portDisconnect (name: string): Promise<any> {
     logger.log('info', 'closing port %s', name)
-    if (this.sockList[name] !== undefined) {
-      this.sockList[name].disconnect(this.ports.get(name))
-      delete this.sockList[name]
+    if (this.sockList.get(name) !== undefined) {
+      this.sockList.get(name).disconnect(this.ports.get(name))
+      this.sockList.delete(name)
       this.ports.delete(name)
     }
   }
@@ -117,8 +120,7 @@ export class FlockCli {
   async readline (): Promise<void> {
     const me = this
     this.rl.question('Command: ', async function (answer) {
-      const result = await me.send(answer)
-      console.log(result)
+      console.log(await me.send(answer))
       if (me.readInput) {
         me.readline()
       }
@@ -127,7 +129,6 @@ export class FlockCli {
 
   async run () : Promise<void> {
     const result = await this.send('version')
-    console.log('connect to ' + result)
     await this.readline()
   }
 }
