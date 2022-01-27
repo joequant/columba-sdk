@@ -98,8 +98,8 @@ export class FlockCli {
     }
   }
 
-  async portList (): Promise<any> {
-    return this.ports
+  async portList (): Promise<Object> {
+    return Object.fromEntries(this.ports)
   }
 
   async readline (): Promise<void> {
