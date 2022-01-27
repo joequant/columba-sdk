@@ -7,7 +7,7 @@
         "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json",
         "lint": "eslint --fix *.ts test/*.ts",
         "start": "./server.js &",
-        "test": "mocha"
+        "test": "mocha --exit"
     },
     "bin": {
         "flock-cli": "./flock-cli.js"

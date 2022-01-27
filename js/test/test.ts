@@ -13,7 +13,7 @@ describe('FlockBase', function () {
     await cli.portConnect('default', 'tcp://127.0.0.1:3000')
   })
   after(function () {
-    app.shutdown()
+
   })
 
   describe('test1', function () {
@@ -31,9 +31,12 @@ describe('FlockBase', function () {
       assert.equal(r, 'FlockBase')
     })
 
-    /*    it('.port-list', async () => {
+    it('.port-list', async () => {
       const r = await cli.send('.port-list')
       assert.equal(r.default, 'tcp://127.0.0.1:3000')
-    }) */
+    })
+    it ('.exit', async() => {
+      await cli.send('.exit')
+    })
   })
 })
