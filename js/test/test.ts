@@ -5,7 +5,10 @@ import assert from 'assert'
 describe('FlockBase', function () {
   let app : FlockBase, cli: FlockCli
   before(async function () {
-    app = new FlockBase('tcp://127.0.0.1:3000')
+    app = new FlockBase({
+      conport: 'tcp://127.0.0.1:3000',
+      pubport: 'tcp://127.0.0.1:3001'
+    })
     cli = new FlockCli()
     assert.ok(app !== undefined)
     assert.ok(cli !== undefined)
@@ -13,7 +16,6 @@ describe('FlockBase', function () {
     await cli.portConnect('default', 'tcp://127.0.0.1:3000')
   })
   after(function () {
-
   })
 
   describe('test1', function () {

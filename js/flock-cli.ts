@@ -128,7 +128,7 @@ export class FlockCli {
   }
 
   async run () : Promise<void> {
-    const result = await this.send('version')
+    console.log(await this.send('version'))
     await this.readline()
   }
 }

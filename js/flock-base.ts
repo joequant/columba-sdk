@@ -4,25 +4,34 @@
 import zmq = require('zeromq')
 import { encode, decode } from '@msgpack/msgpack'
 import EventEmitter = require('events')
-import yargs = require('yargs/yargs')
+import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 
 export class FlockBase {
-  replySockId: string
+  repSockId: string
   replySock: zmq.Reply
+  pubSockId: string
+  pubSock: zmq.Publisher
   emitter: EventEmitter
   initialized: boolean
   constructor (
-    replySockId: string
+    obj: any
   ) {
-    this.replySockId = replySockId
+    this.repSockId = obj.conport
     this.replySock = new zmq.Reply()
+    this.pubSockId = obj.pubport
+    this.pubSock = new zmq.Publisher()
     this.emitter = new EventEmitter()
     this.initialized = false
   };
 
   async initialize (): Promise<void> {
-    await this.replySock.bind(this.replySockId)
+    if (this.repSockId !== undefined) {
+      await this.replySock.bind(this.repSockId)
+    }
+    if (this.pubSockId !== undefined) {
+      await this.pubSock.bind(this.pubSockId)
+    }
     this.emitter.on('echo', async (inobj: any): Promise<void> => {
       this.send(inobj.data)
     })
@@ -59,17 +68,13 @@ export class FlockBase {
     sock.send(encode(data))
   }
 
-  async publishSock (connId: string) {
-    const pubSock = new zmq.Publisher()
-    await pubSock.bind(connId)
-    return pubSock
-  }
-
   async shutdown () : Promise<void> {
     process.exit(0)
   }
 
   static startup (argv: any) : void {
+    const app = new FlockBase(argv)
+    app.run()
   }
 
   static runServer () : void {
@@ -79,14 +84,16 @@ export class FlockBase {
       '$0 [port]',
       'the default command',
       (yargs: any) => {
-        return yargs.positional('port', {
-          describe: 'port value',
-          type: 'string',
-          default: 'tcp://127.0.0.1:3000'
-        })
       },
       (argv: any) => {
         me.startup(argv)
+      }).default(
+      {
+        conport: 'tcp://127.0.0.1:3000'
       }).argv
   }
+}
+
+if (typeof require !== 'undefined' && require.main === module) {
+  FlockBase.runServer()
 }
