@@ -9,8 +9,8 @@ import { hideBin } from 'yargs/helpers'
 
 export class FlockBase {
   repSockId: string
-  replySock: zmq.Reply
   pubSockId: string
+  replySock: zmq.Reply
   pubSock: zmq.Publisher
   beaconReqSock: zmq.Request
   beaconSubSock: zmq.Subscriber
