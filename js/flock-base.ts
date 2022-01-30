@@ -45,6 +45,13 @@ export class FlockBase {
       this.send(inobj.data)
     })
 
+    this.emitter.on('connect-beacon',
+                    async (inobj: any): Promise<void> => {
+      const [beaconControl, beaconPublisher] =
+            inobj.data.split()
+      this.connectBeacon(beaconControl, beaconPublisher)
+    })
+
     this.emitter.on('version', async (inobj: any): Promise<void> => {
       this.send(this.version())
     })
