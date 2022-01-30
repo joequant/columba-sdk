@@ -12,8 +12,13 @@ export class FlockBase {
   replySock: zmq.Reply
   pubSockId: string
   pubSock: zmq.Publisher
+  beaconReqSock: zmq.Request
+  beaconSubSock: zmq.Subscriber
+
   emitter: EventEmitter
   initialized: boolean
+  initializedBeacon: boolean
+
   constructor (
     obj: any
   ) {
@@ -21,11 +26,15 @@ export class FlockBase {
     this.replySock = new zmq.Reply()
     this.pubSockId = obj.pubport
     this.pubSock = new zmq.Publisher()
+    this.beaconReqSock = new zmq.Request()
+    this.beaconSubSock = new zmq.Subscriber()
     this.emitter = new EventEmitter()
     this.initialized = false
+    this.initializedBeacon = false
   };
 
   async initialize (): Promise<void> {
+    this.initialized = true
     if (this.repSockId !== undefined) {
       await this.replySock.bind(this.repSockId)
     }
@@ -39,6 +48,18 @@ export class FlockBase {
     this.emitter.on('version', async (inobj: any): Promise<void> => {
       this.send(this.version())
     })
+  }
+
+  async initializeBeacon (): Promise<void> {
+    this.initializedBeacon = true
+  }
+
+  async connectBeacon (
+    beaconControl: string,
+    beaconPublisher: string
+  ) : Promise<void> {
+    this.beaconReqSock.connect(beaconControl)
+    this.beaconSubSock.connect(beaconPublisher)
   }
 
   version () : string {
@@ -56,12 +77,29 @@ export class FlockBase {
     }
   }
 
+  async runBeacon () : Promise<void> {
+    if (!this.initializedBeacon) {
+      await this.initializeBeacon()
+    }
+    for await (const [msg] of this.beaconSubSock) {
+      await this.processTxnBeacon(decode(msg))
+    }
+  }
+
   async processTxn (inobj: any) : Promise<boolean> {
     return this.emitter.emit(inobj.cmd, inobj)
   }
 
+  async processTxnBeacon (inobj: any) : Promise<boolean> {
+    return true
+  }
+
   async send (data: any) {
     this.replySock.send(encode(data))
+  }
+
+  async sendBeacon (data: any) {
+    this.beaconReqSock.send(encode(data))
   }
 
   async sendSock (sock: any, data: any) {
@@ -75,6 +113,7 @@ export class FlockBase {
   static startup (argv: any) : void {
     const app = new FlockBase(argv)
     app.run()
+    app.runBeacon()
   }
 
   static runServer () : void {

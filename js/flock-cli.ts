@@ -3,7 +3,7 @@
 
 import zmq = require('zeromq')
 import readline = require('readline');
-import yargs = require('yargs/yargs')
+import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { encode, decode } from '@msgpack/msgpack'
 import { createLogger, format, transports } from 'winston'
@@ -58,7 +58,7 @@ export class FlockCli {
     } else if (cmdfull === '.port-connect') {
       let [name, port] = mySplit(data, ' ', 2)
       if (port.match(/^[0-9]+/)) {
-        port = 'tcp://127.0.0.1:' + port
+        port = `tcp://127.0.0.1:${port}`
       }
       return await this.portConnect(name, port)
     } else if (cmdfull === '.port-disconnect') {
