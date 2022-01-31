@@ -6,7 +6,7 @@ set -o errexit
 container=$(buildah from fedora)
 mountpoint=$(buildah mount $container)
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-name=flock-js-base
+name=flock-base-js
 
 # Labels are part of the "buildah config" command
 buildah config --label maintainer="Joseph C Wang <joe@pigeonchain.co>" $container
