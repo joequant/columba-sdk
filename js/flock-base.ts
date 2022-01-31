@@ -6,6 +6,7 @@ import { encode, decode } from '@msgpack/msgpack'
 import EventEmitter = require('events')
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
+import winston, { createLogger, format } from 'winston'
 
 export class FlockBase {
   repSockId: string
@@ -14,6 +15,7 @@ export class FlockBase {
   pubSock: zmq.Publisher
   beaconReqSock: zmq.Request
   beaconSubSock: zmq.Subscriber
+  logger: winston.Logger
 
   emitter: EventEmitter
   initialized: boolean
@@ -31,6 +33,13 @@ export class FlockBase {
     this.emitter = new EventEmitter()
     this.initialized = false
     this.initializedBeacon = false
+    this.logger = createLogger({
+      level: 'info',
+      format: format.combine(
+        format.splat(),
+        format.simple()
+      )
+    })
   };
 
   async initialize (): Promise<void> {
@@ -46,11 +55,11 @@ export class FlockBase {
     })
 
     this.emitter.on('connect-beacon',
-                    async (inobj: any): Promise<void> => {
-      const [beaconControl, beaconPublisher] =
+      async (inobj: any): Promise<void> => {
+        const [beaconControl, beaconPublisher] =
             inobj.data.split()
-      this.connectBeacon(beaconControl, beaconPublisher)
-    })
+        this.connectBeacon(beaconControl, beaconPublisher)
+      })
 
     this.emitter.on('version', async (inobj: any): Promise<void> => {
       this.send(this.version())
