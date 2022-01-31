@@ -50,7 +50,18 @@ export class FlockCli {
   }
 
   async send (command: string): Promise<any> {
-    const [cmdfull, data] = mySplit(command, ' ', 2)
+    const [cmdfull, datafull] = mySplit(command, ' ', 2)
+    let data
+    if (datafull[0] === '[' || datafull[0] === '{' ||
+        datafull[0] === '"') {
+      try {
+        data = JSON.parse(datafull)
+      } catch (e) {
+        return e
+      }
+    } else {
+      data = datafull
+    }
     if (cmdfull === '.exit') {
       this.portDisconnectAll()
       this.readInput = false
