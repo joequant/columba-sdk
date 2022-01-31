@@ -1,8 +1,9 @@
 {
     "name": "pigeon-sdk-js",
     "scripts": {
-        "prepare": "tsc --build ; buildah unshare ./build-flock-base.sh",
+        "prepare": "tsc --build",
         "build": "tsc --build",
+        "build-flock":  "buildah unshare ./build-flock-base.sh",
         "clean": "tsc --build --clean",
         "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json",
         "lint": "eslint --fix *.ts test/*.ts",
