@@ -127,7 +127,7 @@ export class FlockBase {
   }
 
   static startup (argv: any) : void {
-    const app = new FlockBase(argv)
+    const app = new this(argv)
     app.run()
     app.runBeacon()
   }
