@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
 
-import zmq = require('zeromq')
+import * as zmq from 'zeromq'
 import { encode, decode } from '@msgpack/msgpack'
 import EventEmitter = require('events')
 import yargs from 'yargs'
