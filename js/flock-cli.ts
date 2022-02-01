@@ -5,7 +5,6 @@ import zmq = require('zeromq')
 import readline = require('readline');
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { encode, decode } from '@msgpack/msgpack'
 import { createLogger, format, transports } from 'winston'
 
 const myTransports = {
@@ -89,13 +88,13 @@ export class FlockCli {
     if (this.sockList.get(port) === undefined) {
       return 'no connection'
     }
-    await this.sockList.get(port).send(encode({
+    await this.sockList.get(port).send({
       cmd: cmd,
       subcmd: subcmd,
       data: data
-    }))
+    })
     const [result] = await this.sockList.get(port).receive()
-    return decode(result)
+    return result
   }
 
   async portConnect (name: string, port: string): Promise<any> {

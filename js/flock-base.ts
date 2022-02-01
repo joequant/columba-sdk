@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: MIT
 
 import * as zmq from 'zeromq'
-import { encode, decode } from '@msgpack/msgpack'
 import EventEmitter = require('events')
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -74,7 +73,7 @@ export class FlockBase {
     }
     this.beaconRun()
     for await (const [msg] of this.replySock) {
-      if (!await this.processTxn(decode(msg))) {
+      if (!await this.processTxn(msg)) {
         this.send('unknown command')
       }
     }
@@ -85,11 +84,11 @@ export class FlockBase {
   }
 
   async send (data: any) {
-    this.replySock.send(encode(data))
+    this.replySock.send(data)
   }
 
-  async sendSock (sock: any, data: any) {
-    sock.send(encode(data))
+  async publish (filter: string, data: any) {
+    this.pubSock.send([filter, data])
   }
 
   async shutdown () : Promise<void> {
@@ -120,7 +119,7 @@ export class FlockBase {
       await this.beaconInitialize()
     }
     for await (const [msg] of this.beaconSubSock) {
-      await this.beaconProcessTxn(decode(msg))
+      await this.beaconProcessTxn(msg)
     }
   }
 
@@ -129,7 +128,15 @@ export class FlockBase {
   }
 
   async beaconSend (data: any) {
-    this.beaconReqSock.send(encode(data))
+    this.beaconReqSock.send(data)
+  }
+
+  async beaconSubscribe (data: string) {
+    this.beaconReqSock.subscribe(data)
+  }
+
+  async beaconUnsubscribe (data: string) {
+    this.beaconReqSock.unsubscribe(data)
   }
 
   static runServer () : void {
