@@ -13,7 +13,6 @@ describe('FlockBase', function () {
     assert.ok(app !== undefined)
     assert.ok(cli !== undefined)
     app.run()
-    app.runBeacon()
     await cli.portConnect('default', 'tcp://127.0.0.1:3000')
   })
   after(function () {

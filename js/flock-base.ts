@@ -56,24 +56,12 @@ export class FlockBase {
 
     this.emitter.on('beacon-connect',
       async (inobj: any): Promise<void> => {
-        this.connectBeacon(inobj.data[0], inobj.data[1])
+        this.beaconConnect(inobj.data[0], inobj.data[1])
       })
 
     this.emitter.on('version', async (inobj: any): Promise<void> => {
       this.send(this.version())
     })
-  }
-
-  async initializeBeacon (): Promise<void> {
-    this.initializedBeacon = true
-  }
-
-  async connectBeacon (
-    beaconControl: string,
-    beaconPublisher: string
-  ) : Promise<void> {
-    this.beaconReqSock.connect(beaconControl)
-    this.beaconSubSock.connect(beaconPublisher)
   }
 
   version () : string {
@@ -84,6 +72,7 @@ export class FlockBase {
     if (!this.initialized) {
       await this.initialize()
     }
+    this.beaconRun()
     for await (const [msg] of this.replySock) {
       if (!await this.processTxn(decode(msg))) {
         this.send('unknown command')
@@ -91,29 +80,12 @@ export class FlockBase {
     }
   }
 
-  async runBeacon () : Promise<void> {
-    if (!this.initializedBeacon) {
-      await this.initializeBeacon()
-    }
-    for await (const [msg] of this.beaconSubSock) {
-      await this.processTxnBeacon(decode(msg))
-    }
-  }
-
   async processTxn (inobj: any) : Promise<boolean> {
     return this.emitter.emit(inobj.cmd, inobj)
   }
 
-  async processTxnBeacon (inobj: any) : Promise<boolean> {
-    return true
-  }
-
   async send (data: any) {
     this.replySock.send(encode(data))
-  }
-
-  async sendBeacon (data: any) {
-    this.beaconReqSock.send(encode(data))
   }
 
   async sendSock (sock: any, data: any) {
@@ -127,7 +99,37 @@ export class FlockBase {
   static startup (argv: any) : void {
     const app = new this(argv)
     app.run()
-    app.runBeacon()
+  }
+
+  // --------------- beacon functions
+
+  async beaconInitialize (): Promise<void> {
+    this.initializedBeacon = true
+  }
+
+  async beaconConnect (
+    beaconControl: string,
+    beaconPublisher: string
+  ) : Promise<void> {
+    this.beaconReqSock.connect(beaconControl)
+    this.beaconSubSock.connect(beaconPublisher)
+  }
+
+  async beaconRun () : Promise<void> {
+    if (!this.initializedBeacon) {
+      await this.beaconInitialize()
+    }
+    for await (const [msg] of this.beaconSubSock) {
+      await this.beaconProcessTxn(decode(msg))
+    }
+  }
+
+  async beaconProcessTxn (inobj: any) : Promise<boolean> {
+    return true
+  }
+
+  async beaconSend (data: any) {
+    this.beaconReqSock.send(encode(data))
   }
 
   static runServer () : void {
