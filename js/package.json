@@ -3,7 +3,7 @@
     "scripts": {
         "prepare": "tsc --build",
         "build": "tsc --build",
-        "build-flock":  "buildah unshare ./build-flock-base.sh",
+        "build-flock": "buildah unshare ./build-flock-base.sh",
         "clean": "tsc --build --clean",
         "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json",
         "lint": "eslint --fix *.ts test/*.ts",
@@ -14,6 +14,7 @@
         "flock-cli": "./flock-cli.js"
     },
     "dependencies": {
+        "@msgpack/msgpack": "^2.7.1",
         "@types/yargs": "^17.0.8",
         "logging": "^3.3.0",
         "winston": "^3.4.0",

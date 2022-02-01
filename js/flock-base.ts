@@ -3,6 +3,7 @@
 
 import * as zmq from 'zeromq'
 import EventEmitter = require('events')
+import { encode, decode } from '@msgpack/msgpack'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import winston, { createLogger, format } from 'winston'
@@ -73,7 +74,7 @@ export class FlockBase {
     }
     this.beaconRun()
     for await (const [msg] of this.replySock) {
-      if (!await this.processTxn(msg)) {
+      if (!await this.processTxn(decode(msg))) {
         this.send('unknown command')
       }
     }
@@ -84,11 +85,11 @@ export class FlockBase {
   }
 
   async send (data: any) {
-    this.replySock.send(data)
+    this.replySock.send(encode(data))
   }
 
   async publish (filter: string, data: any) {
-    this.pubSock.send([filter, data])
+    this.pubSock.send([filter, encode(data)])
   }
 
   async shutdown () : Promise<void> {
