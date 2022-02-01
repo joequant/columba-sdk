@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import * as zmq from 'zeromq'
-import EventEmitter = require('events')
+import EventEmitter from 'events'
 import { encode, decode } from '@msgpack/msgpack'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'

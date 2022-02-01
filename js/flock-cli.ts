@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
 
-import zmq = require('zeromq')
-import readline = require('readline');
+import * as zmq from 'zeromq'
+import readline from 'readline'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { encode, decode } from '@msgpack/msgpack'
