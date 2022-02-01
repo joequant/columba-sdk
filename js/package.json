@@ -11,7 +11,8 @@
         "test": "mocha --exit"
     },
     "bin": {
-        "flock-cli": "./flock-cli.js"
+      "flock-cli": "./flock-cli.js",
+      "flock-monitor": "./flock-monitor.js"
     },
     "dependencies": {
         "@msgpack/msgpack": "^2.7.1",

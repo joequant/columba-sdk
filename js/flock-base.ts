@@ -74,8 +74,12 @@ export class FlockBase {
     }
     this.beaconRun()
     for await (const [msg] of this.replySock) {
-      if (!await this.processTxn(decode(msg))) {
-        this.send('unknown command')
+      try {
+        if (!await this.processTxn(decode(msg))) {
+          this.send('unknown command')
+        }
+      } catch(e) {
+        this.send(e)
       }
     }
   }
