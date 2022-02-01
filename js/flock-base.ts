@@ -132,11 +132,11 @@ export class FlockBase {
   }
 
   async beaconSubscribe (data: string) {
-    this.beaconReqSock.subscribe(data)
+    this.beaconPubSock.subscribe(data)
   }
 
   async beaconUnsubscribe (data: string) {
-    this.beaconReqSock.unsubscribe(data)
+    this.beaconPubSock.unsubscribe(data)
   }
 
   static runServer () : void {
