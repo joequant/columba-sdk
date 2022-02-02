@@ -20,7 +20,7 @@ export class FlockBase {
   emitter: EventEmitter
   initialized: boolean
   initializedBeacon: boolean
-
+  beaconPrefix: string
   constructor (
     obj: any
   ) {
@@ -33,6 +33,7 @@ export class FlockBase {
     this.emitter = new EventEmitter()
     this.initialized = false
     this.initializedBeacon = false
+    this.beaconPrefix = obj.beaconprefix
     this.logger = createLogger({
       level: 'info',
       format: format.combine(
@@ -54,9 +55,18 @@ export class FlockBase {
       this.send(inobj.data)
     })
 
-    this.emitter.on('beacon-connect',
+    this.emitter.on(
+      'beacon-connect',
       async (inobj: any): Promise<void> => {
-        this.beaconConnect(inobj.data[0], inobj.data[1])
+        let conport = inobj.data[0].toString()
+        let pubport = inobj.data[1].toString()
+        if (conport.matches(/^[0-9]+$/)) {
+          conport = `${this.beaconPrefix}:${conport}`
+        }
+        if (pubport.matches(/^[0-9]+$/)) {
+          conport = `${this.beaconPrefix}:${pubport}`
+        }
+        this.beaconConnect(conport, pubport)
       })
 
     this.emitter.on('version', async (inobj: any): Promise<void> => {
@@ -158,7 +168,8 @@ export class FlockBase {
         me.startup(argv)
       }).default(
       {
-        conport: 'tcp://127.0.0.1:3000'
+        conport: 'tcp://127.0.0.1:3000',
+        beaconprefix: 'tcp//127.0.0.1'
       }).argv
   }
 }
