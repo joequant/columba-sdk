@@ -24,6 +24,7 @@ export class FlockBase {
   constructor (
     obj: any
   ) {
+    console.log(obj)
     this.repSockId = obj.conport
     this.replySock = new zmq.Reply()
     this.pubSockId = obj.pubport
@@ -60,11 +61,11 @@ export class FlockBase {
       async (inobj: any): Promise<void> => {
         let conport = inobj.data[0].toString()
         let pubport = inobj.data[1].toString()
-        if (conport.matches(/^[0-9]+$/)) {
+        if (conport.match(/^[0-9]+$/)) {
           conport = `${this.beaconPrefix}:${conport}`
         }
-        if (pubport.matches(/^[0-9]+$/)) {
-          conport = `${this.beaconPrefix}:${pubport}`
+        if (pubport.match(/^[0-9]+$/)) {
+          pubport = `${this.beaconPrefix}:${pubport}`
         }
         this.beaconConnect(conport, pubport)
       })
@@ -169,7 +170,7 @@ export class FlockBase {
       }).default(
       {
         conport: 'tcp://127.0.0.1:3000',
-        beaconprefix: 'tcp//127.0.0.1'
+        beaconprefix: 'tcp://127.0.0.1'
       }).argv
   }
 }

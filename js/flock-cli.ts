@@ -68,9 +68,6 @@ export class FlockCli {
       return ''
     } else if (cmdfull === '.port-connect') {
       let [name, port] = mySplit(data, ' ', 2)
-      if (port.match(/^[0-9]+/)) {
-        port = `tcp://127.0.0.1:${port}`
-      }
       return await this.portConnect(name, port)
     } else if (cmdfull === '.port-disconnect') {
       return await this.portDisconnect(data)
@@ -99,6 +96,9 @@ export class FlockCli {
   }
 
   async portConnect (name: string, port: string): Promise<any> {
+    if (port.match(/^[0-9]+/)) {
+      port = `tcp://127.0.0.1:${port}`
+    }
     if (this.sockList.get(name) === undefined) {
       this.sockList.set(name, new zmq.Request())
     } else {
