@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { FlockBase } from 'pigeon-sdk/js/flock-base'
+import { FlockBase } from './flock-base'
 import winston from 'winston'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
