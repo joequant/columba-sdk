@@ -129,7 +129,7 @@ export class FlockBase {
     this.beaconSubSock.connect(beaconPublisher)
     this.logger.log(
       'info', 'beaconConnect %s %s',
-      beaconControl, beaconPubisher
+      beaconControl, beaconPublisher
     )
   }
 
