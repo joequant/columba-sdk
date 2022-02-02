@@ -66,7 +66,12 @@ export class FlockBase {
         if (pubport.match(/^[0-9]+$/)) {
           pubport = `${this.beaconPrefix}:${pubport}`
         }
-        this.beaconConnect(conport, pubport)
+        try {
+          await this.beaconConnect(conport, pubport)
+          this.send(`connected to ${conport} ${pubport}`)
+        } catch(e) {
+          this.send(e)
+        }
       })
 
     this.emitter.on('version', async (inobj: any): Promise<void> => {
