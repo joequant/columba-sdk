@@ -24,7 +24,6 @@ export class FlockBase {
   constructor (
     obj: any
   ) {
-    console.log(obj)
     this.repSockId = obj.conport
     this.replySock = new zmq.Reply()
     this.pubSockId = obj.pubport
