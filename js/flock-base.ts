@@ -127,6 +127,10 @@ export class FlockBase {
   ) : Promise<void> {
     this.beaconReqSock.connect(beaconControl)
     this.beaconSubSock.connect(beaconPublisher)
+    this.logger.log(
+      'info', 'beaconConnect %s %s',
+      beaconControl, beaconPubisher
+    )
   }
 
   async beaconRun () : Promise<void> {
