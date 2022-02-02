@@ -123,8 +123,10 @@ export class FlockBase {
     if (!this.initializedBeacon) {
       await this.beaconInitialize()
     }
-    for await (const [msg] of this.beaconSubSock) {
-      await this.beaconProcessTxn(msg)
+
+    for await (const [filter, msg] of this.beaconSubSock) {
+      this.logger.log('info', decode(msg))
+      await this.beaconProcessTxn(decode(msg))
     }
   }
 
