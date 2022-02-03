@@ -8,6 +8,7 @@ import { hideBin } from 'yargs/helpers'
 import { encode, decode } from '@msgpack/msgpack'
 import { createLogger, format, transports } from 'winston'
 import JSON5 from 'json5'
+import { mySplit } from './flock-lib'
 
 const myTransports = {
   file: new transports.File({ filename: 'cli.log' }),
@@ -25,15 +26,6 @@ const logger = createLogger({
     myTransports.console
   ]
 })
-
-function mySplit (
-  string: string,
-  delimiter: string,
-  n: number
-) {
-  const parts = string.split(delimiter)
-  return parts.slice(0, n - 1).concat([parts.slice(n - 1).join(delimiter)])
-}
 
 export class FlockCli {
   sockList: Map<string, any>

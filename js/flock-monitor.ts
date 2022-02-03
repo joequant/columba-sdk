@@ -3,15 +3,7 @@ import { FlockBase } from './flock-base'
 import winston from 'winston'
 import readline from 'readline'
 import JSON5 from 'json5'
-
-function mySplit (
-  string: string,
-  delimiter: string,
-  n: number
-) {
-  const parts = string.split(delimiter)
-  return parts.slice(0, n - 1).concat([parts.slice(n - 1).join(delimiter)])
-}
+import { mySplit } from './flock-lib'
 
 export class FlockMonitor extends FlockBase {
   readInput: boolean
