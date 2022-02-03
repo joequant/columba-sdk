@@ -32,13 +32,28 @@ export class FlockMonitor extends FlockBase {
     });
     await super.initialize()
     this.emitter.on(
-      'beacon-subscribe',
+      'connect',
+      async (inobj: any): Promise<void> => {
+        let pubport = inobj.toString()
+        if (pubport.match(/^[0-9]+$/)) {
+          pubport = `${this.beaconPrefix}:${pubport}`
+        }
+        try {
+          this.beaconSubSock.connect(pubport)
+          this.send(`connected to ${pubport}`)
+        } catch(e) {
+          this.send(e)
+        }
+      })
+
+    this.emitter.on(
+      'subscribe',
       async (inobj: any): Promise<void> => {
         this.beaconSubscribe(inobj.data)
         this.send(`subscribed to ${inobj.data}`)
       })
     this.emitter.on(
-      'beacon-unsubscribe',
+      'unsubscribe',
       async (inobj: any): Promise<void> => {
         this.beaconUnsubscribe(inobj.data)
         this.send(`unsubscribed to ${inobj.data}`)
@@ -105,13 +120,14 @@ export class FlockMonitor extends FlockBase {
     const argv = yargs(hideBin(process.argv)).command(
       '$0 [port]',
       'the default command',
-      (yargs: any) => {
+      (yargs) => {
+        return yargs.positional('pubport', {
+          describe: 'port value',
+          type: 'string'
+        })
       },
-      (argv: any) => {
+      (argv) => {
         me.startup(argv)
-      }).default(
-        {
-          conport: 'tcp://127.0.0.1:3002'
       }).argv
   }
 }

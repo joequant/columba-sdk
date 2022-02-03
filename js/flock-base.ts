@@ -142,9 +142,7 @@ export class FlockBase {
     if (!this.initializedBeacon) {
       await this.beaconInitialize()
     }
-
     for await (const [filter, msg] of this.beaconSubSock) {
-      this.logger.log('info', decode(msg))
       await this.beaconProcessTxn(decode(msg))
     }
   }
@@ -165,17 +163,21 @@ export class FlockBase {
     this.beaconSubSock.unsubscribe(data)
   }
 
-  static runServer () : void {
+  static _yargs() {
     const me = this
     // eslint-disable-next-line no-unused-vars
-    const argv = yargs(hideBin(process.argv)).command(
+    return yargs(hideBin(process.argv)).command(
       '$0 [port]',
       'the default command',
       (yargs: any) => {
       },
       (argv: any) => {
         me.startup(argv)
-      }).default(
+      })
+  }
+
+  static runServer () : void {
+    const argv = this._yargs().default(
       {
         conport: 'tcp://127.0.0.1:3000',
         beaconprefix: 'tcp://127.0.0.1'
