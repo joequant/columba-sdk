@@ -33,6 +33,11 @@ describe('FlockBase', function () {
       assert.equal(r, 'hello world')
     })
 
+    it('echo string', async () => {
+      const r = await cli.send('echo \'hello world\'')
+      assert.equal(r, 'hello world')
+    })
+
     it('echo array', async () => {
       const r = await cli.send('echo [ 1, 2 ]')
       assert.equal(r[0], 1)
@@ -41,6 +46,13 @@ describe('FlockBase', function () {
     it('echo object', async () => {
       const r = await cli.send('echo {"foo": 99, "bar": 2 }')
       assert.equal(r.foo, 99)
+      assert.equal(r.bar, 2)
+    })
+
+    it('echo object', async () => {
+      const r = await cli.send('echo {foo: 99, bar: 2 }')
+      assert.equal(r.foo, 99)
+      assert.equal(r.bar, 2)
     })
 
     it('echo error', async () => {

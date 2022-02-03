@@ -7,6 +7,7 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { encode, decode } from '@msgpack/msgpack'
 import { createLogger, format, transports } from 'winston'
+import JSON5 from 'json5'
 
 const myTransports = {
   file: new transports.File({ filename: 'cli.log' }),
@@ -53,9 +54,9 @@ export class FlockCli {
     const [cmdfull, datafull] = mySplit(command, ' ', 2)
     let data
     if (datafull[0] === '[' || datafull[0] === '{' ||
-        datafull[0] === '"') {
+        datafull[0] === '"' || datafull[0] === '\'') {
       try {
-        data = JSON.parse(datafull)
+        data = JSON5.parse(datafull)
       } catch (e) {
         return e
       }

@@ -11,12 +11,13 @@
         "test": "mocha --exit"
     },
     "bin": {
-      "flock-cli": "./flock-cli.js",
-      "flock-monitor": "./flock-monitor.js"
+        "flock-cli": "./flock-cli.js",
+        "flock-monitor": "./flock-monitor.js"
     },
     "dependencies": {
         "@msgpack/msgpack": "^2.7.1",
         "@types/yargs": "^17.0.8",
+        "json5": "^2.2.0",
         "logging": "^3.3.0",
         "winston": "^3.4.0",
         "yargs": "^17.3.1",

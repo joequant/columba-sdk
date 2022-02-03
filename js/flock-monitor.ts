@@ -2,6 +2,7 @@
 import { FlockBase } from './flock-base'
 import winston from 'winston'
 import readline from 'readline'
+import JSON5 from 'json5'
 
 function mySplit (
   string: string,
@@ -79,9 +80,9 @@ export class FlockMonitor extends FlockBase {
       const [cmd, subcmd] = mySplit(cmdfull, '.', 2)
       let data
       if (datafull[0] === '[' || datafull[0] === '{' ||
-          datafull[0] === '"') {
+          datafull[0] === '"' || datafull[0] === '\'') {
         try {
-          data = JSON.parse(datafull)
+          data = JSON5.parse(datafull)
         } catch (e) {
           return e
         }
