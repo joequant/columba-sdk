@@ -152,8 +152,10 @@ export class FlockBase {
     return true
   }
 
-  async beaconSend (data: any) {
+  async beaconSend (data: any): Promise<any> {
     this.beaconReqSock.send(encode(data))
+    const [result] = await this.beaconReqSock.receive()
+    return decode(result)
   }
 
   async beaconSubscribe (data: string) {
