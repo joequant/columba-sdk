@@ -153,7 +153,7 @@ export class FlockBase {
   }
 
   async beaconSend (data: any) {
-    this.beaconReqSock.send(data)
+    this.beaconReqSock.send(encode(data))
   }
 
   async beaconSubscribe (data: string) {
