@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 import { FlockBase } from './flock-base'
 import winston from 'winston'
-import yargs from 'yargs'
-import { hideBin } from 'yargs/helpers'
 import readline from 'readline'
 
 function mySplit (
@@ -24,24 +22,25 @@ export class FlockMonitor extends FlockBase {
       output: process.stdout
     })
     this.readInput = true
-    this.logger.add(new winston.transports.Console({}));
+    this.logger.add(new winston.transports.Console({}))
   }
+
   async initialize (): Promise<void> {
     process.on('uncaughtException', (err) => {
-      this.send(err);
-    });
+      this.send(err)
+    })
     await super.initialize()
     this.emitter.on(
       'connect',
       async (inobj: any): Promise<void> => {
-        let pubport = inobj.toString()
+        let pubport = inobj.data.toString()
         if (pubport.match(/^[0-9]+$/)) {
           pubport = `${this.beaconPrefix}:${pubport}`
         }
         try {
           this.beaconSubSock.connect(pubport)
           this.send(`connected to ${pubport}`)
-        } catch(e) {
+        } catch (e) {
           this.send(e)
         }
       })
@@ -60,8 +59,8 @@ export class FlockMonitor extends FlockBase {
       })
   }
 
-  async beaconProcessTxn (inobj: any) : Promise<boolean> {
-    this.logger.log('info', inobj)
+  async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
+    this.logger.log('info', filter, inobj)
     return true
   }
 
@@ -97,7 +96,7 @@ export class FlockMonitor extends FlockBase {
         })) {
           me.send('unknown command')
         }
-      } catch(e) {
+      } catch (e) {
         me.send(e)
       }
       if (me.readInput) {
@@ -115,19 +114,10 @@ export class FlockMonitor extends FlockBase {
   }
 
   static runServer () : void {
-    const me = this
     // eslint-disable-next-line no-unused-vars
-    const argv = yargs(hideBin(process.argv)).command(
-      '$0 [port]',
-      'the default command',
-      (yargs) => {
-        return yargs.positional('pubport', {
-          describe: 'port value',
-          type: 'string'
-        })
-      },
-      (argv) => {
-        me.startup(argv)
+    const argv = this._yargs().default(
+      {
+        beaconprefix: 'tcp://127.0.0.1'
       }).argv
   }
 }

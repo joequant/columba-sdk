@@ -67,7 +67,7 @@ export class FlockCli {
       this.readInput = false
       return ''
     } else if (cmdfull === '.port-connect') {
-      let [name, port] = mySplit(data, ' ', 2)
+      const [name, port] = mySplit(data, ' ', 2)
       return await this.portConnect(name, port)
     } else if (cmdfull === '.port-disconnect') {
       return await this.portDisconnect(data)

@@ -69,7 +69,7 @@ export class FlockBase {
         try {
           await this.beaconConnect(conport, pubport)
           this.send(`connected to ${conport} ${pubport}`)
-        } catch(e) {
+        } catch (e) {
           this.send(e)
         }
       })
@@ -93,7 +93,7 @@ export class FlockBase {
         if (!await this.processTxn(decode(msg))) {
           this.send('unknown command')
         }
-      } catch(e) {
+      } catch (e) {
         this.send(e)
       }
     }
@@ -142,12 +142,13 @@ export class FlockBase {
     if (!this.initializedBeacon) {
       await this.beaconInitialize()
     }
+    // eslint-disable-next-line no-unused-vars
     for await (const [filter, msg] of this.beaconSubSock) {
-      await this.beaconProcessTxn(decode(msg))
+      await this.beaconProcessTxn(filter.toString(), decode(msg))
     }
   }
 
-  async beaconProcessTxn (inobj: any) : Promise<boolean> {
+  async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
     return true
   }
 
@@ -163,7 +164,7 @@ export class FlockBase {
     this.beaconSubSock.unsubscribe(data)
   }
 
-  static _yargs() {
+  static _yargs () {
     const me = this
     // eslint-disable-next-line no-unused-vars
     return yargs(hideBin(process.argv)).command(
@@ -177,6 +178,7 @@ export class FlockBase {
   }
 
   static runServer () : void {
+    // eslint-disable-next-line no-unused-vars
     const argv = this._yargs().default(
       {
         conport: 'tcp://127.0.0.1:3000',
