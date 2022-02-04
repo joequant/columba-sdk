@@ -77,7 +77,7 @@ export class FlockMonitor extends FlockBase {
 
   async readline (): Promise<void> {
     const me = this
-    this.rl.question('Command: ', async function (answer) {
+    this.rl.question('Monitor> ', async function (answer) {
       const [cmdfull, datafull] = mySplit(answer, ' ', 2)
       const [cmd, subcmd] = mySplit(cmdfull, '.', 2)
       let data
