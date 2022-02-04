@@ -16,11 +16,11 @@ export class FlockMonitor extends FlockBase {
     })
     this.readInput = true
     this.logger.add(new winston.transports.Console({}))
-    if (obj.pubport !== undefined) {
-      this.subSockConnect(obj.pubport)
+    if (obj.subport !== undefined) {
+      this.subSockConnect(obj.subport.toString())
     }
     if (obj.subscribe != undefined) {
-      this.beaconSubscribe(obj.subscript)
+      this.beaconSubscribe(obj.subscribe.toString())
     }
   }
 
@@ -33,9 +33,9 @@ export class FlockMonitor extends FlockBase {
       'connect',
       async (inobj: any): Promise<void> => {
         try {
-          const pubport = inobj.data.toString()
-          this.subSockConnect(pubport)
-          this.send(`connected to ${pubport}`)
+          const subport = inobj.data.toString()
+          this.subSockConnect(subport)
+          this.send(`connected to ${subport}`)
         } catch (e) {
           this.send(e)
         }
@@ -60,11 +60,11 @@ export class FlockMonitor extends FlockBase {
     return true
   }
 
-  subSockConnect(pubport: string) {
-    if (pubport.match(/^[0-9]+$/)) {
-      pubport = `${this.beaconPrefix}:${pubport}`
+  subSockConnect(subport: string) {
+    if (subport.match(/^[0-9]+$/)) {
+      subport = `${this.beaconPrefix}:${subport}`
     }
-    this.beaconSubSock.connect(pubport)
+    this.beaconSubSock.connect(subport)
   }
 
   version () : string {
