@@ -1,5 +1,5 @@
 {
-  "name": "pigeon-sdk",
+  "name": "columba-sdk",
   "scripts": {
     "prepare": "npm run build --workspaces --if-present",
     "build": "npm run build --workspaces --if-present",

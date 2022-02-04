@@ -1,2 +1,2 @@
-# pigeon-sdk
-Pigeon Blockchain SDK
+# columba-sdk
+Columba Blockchain SDK

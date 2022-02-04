@@ -1,5 +1,5 @@
 {
-    "name": "pigeon-sdk-js",
+    "name": "columba-sdk-js",
     "scripts": {
         "prepare": "tsc --build",
         "build": "tsc --build",
