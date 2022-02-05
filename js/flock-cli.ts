@@ -90,9 +90,6 @@ export class FlockCli {
   }
 
   async portConnect (name: string, port: string): Promise<any> {
-    if (port.match(/^[0-9]+/)) {
-      port = `tcp://127.0.0.1:${port}`
-    }
     let mySock = this.sockList.get(name)
     if (mySock === undefined) {
       mySock = new FlockConnection({ prefix: 'tcp://127.0.0.1' })
