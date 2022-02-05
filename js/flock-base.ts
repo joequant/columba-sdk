@@ -9,6 +9,7 @@ import { hideBin } from 'yargs/helpers'
 import winston, { createLogger, format } from 'winston'
 import { FlockConnection } from './flock-connection'
 
+/** Base class for flocks */
 export class FlockBase {
   repSockId: string
   pubSockId: string
@@ -29,7 +30,7 @@ export class FlockBase {
     this.pubSock = new zmq.Publisher()
 
     this.beacon = new FlockConnection({
-      prefix: obj.beaconPrefix
+      prefix: obj.beaconprefix
     })
     this.emitter = new EventEmitter()
     this.initialized = false
