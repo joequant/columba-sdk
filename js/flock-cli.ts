@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
 
-import * as zmq from 'zeromq'
 import readline from 'readline'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
-import { encode, decode } from '@msgpack/msgpack'
 import { createLogger, format, transports } from 'winston'
 import JSON5 from 'json5'
 import { mySplit } from './flock-lib'
+import { FlockConnection } from './flock-connection'
 
 const myTransports = {
   file: new transports.File({ filename: 'cli.log' }),
@@ -28,12 +27,12 @@ const logger = createLogger({
 })
 
 export class FlockCli {
-  sockList: Map<string, any>
+  sockList: Map<string, FlockConnection>
   ports: Map<string, string>
   readInput: boolean
   rl
   constructor () {
-    this.sockList = new Map<string, any>()
+    this.sockList = new Map<string, FlockConnection>()
     this.ports = new Map<string, string>()
     this.rl = readline.createInterface({
       input: process.stdin,
@@ -79,33 +78,38 @@ export class FlockCli {
     if (this.sockList.get(port) === undefined) {
       return 'no connection'
     }
-    await this.sockList.get(port).send(encode({
-      cmd: cmd,
-      subcmd: subcmd,
-      data: data
-    }))
-    const [result] = await this.sockList.get(port).receive()
-    return decode(result)
+    const mySock = this.sockList.get(port)
+    if (mySock !== undefined) {
+      const result = await mySock.send({
+        cmd: cmd,
+        subcmd: subcmd,
+        data: data
+      })
+      return result
+    }
   }
 
   async portConnect (name: string, port: string): Promise<any> {
     if (port.match(/^[0-9]+/)) {
       port = `tcp://127.0.0.1:${port}`
     }
-    if (this.sockList.get(name) === undefined) {
-      this.sockList.set(name, new zmq.Request())
+    let mySock = this.sockList.get(name)
+    if (mySock === undefined) {
+      mySock = new FlockConnection({ prefix: 'tcp://127.0.0.1' })
+      this.sockList.set(name, mySock)
     } else {
-      this.sockList.get(name).disconnect()
+      mySock.disconnect()
     }
     this.ports.set(name, port)
-    this.sockList.get(name).connect(port)
+    mySock.connect(port, null)
     logger.log('info', 'Cli %s bound to %s', name, port)
   }
 
   async portDisconnect (name: string): Promise<any> {
     logger.log('info', 'closing port %s', name)
-    if (this.sockList.get(name) !== undefined) {
-      this.sockList.get(name).disconnect(this.ports.get(name))
+    const mySock = this.sockList.get(name)
+    if (mySock !== undefined) {
+      mySock.disconnect()
       this.sockList.delete(name)
       this.ports.delete(name)
     }
