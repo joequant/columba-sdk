@@ -17,10 +17,10 @@ export class FlockMonitor extends FlockBase {
     this.readInput = true
     this.logger.add(new winston.transports.Console({}))
     if (obj.subport !== undefined) {
-      this.subSockConnect(obj.subport.toString())
+      this.beacon.connect(null, obj.subport.toString())
     }
-    if (obj.subscribe != undefined) {
-      this.beaconSubscribe(obj.subscribe.toString())
+    if (obj.subscribe !== undefined) {
+      this.beacon.subscribe(obj.subscribe.toString())
     }
   }
 
@@ -34,7 +34,7 @@ export class FlockMonitor extends FlockBase {
       async (inobj: any): Promise<void> => {
         try {
           const subport = inobj.data.toString()
-          this.subSockConnect(subport)
+          this.beacon.connect(null, subport)
           this.send(`connected to ${subport}`)
         } catch (e) {
           this.send(e)
@@ -44,13 +44,13 @@ export class FlockMonitor extends FlockBase {
     this.emitter.on(
       'subscribe',
       async (inobj: any): Promise<void> => {
-        this.beaconSubscribe(inobj.data)
+        this.beacon.subscribe(inobj.data)
         this.send(`subscribed to ${inobj.data}`)
       })
     this.emitter.on(
       'unsubscribe',
       async (inobj: any): Promise<void> => {
-        this.beaconUnsubscribe(inobj.data)
+        this.beacon.unsubscribe(inobj.data)
         this.send(`unsubscribed to ${inobj.data}`)
       })
   }
@@ -58,13 +58,6 @@ export class FlockMonitor extends FlockBase {
   async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
     this.logger.log('info', filter, inobj)
     return true
-  }
-
-  subSockConnect(subport: string) {
-    if (subport.match(/^[0-9]+$/)) {
-      subport = `${this.beaconPrefix}:${subport}`
-    }
-    this.beaconSubSock.connect(subport)
   }
 
   version () : string {

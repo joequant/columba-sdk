@@ -7,20 +7,19 @@ import { encode, decode } from '@msgpack/msgpack'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import winston, { createLogger, format } from 'winston'
+import { FlockConnection } from './flock-connection'
 
 export class FlockBase {
   repSockId: string
   pubSockId: string
   replySock: zmq.Reply
   pubSock: zmq.Publisher
-  beaconReqSock: zmq.Request
-  beaconSubSock: zmq.Subscriber
+  beacon: FlockConnection
   logger: winston.Logger
-
+  initializedBeacon: boolean
   emitter: EventEmitter
   initialized: boolean
-  initializedBeacon: boolean
-  beaconPrefix: string
+
   constructor (
     obj: any
   ) {
@@ -28,12 +27,14 @@ export class FlockBase {
     this.replySock = new zmq.Reply()
     this.pubSockId = obj.pubport
     this.pubSock = new zmq.Publisher()
-    this.beaconReqSock = new zmq.Request()
-    this.beaconSubSock = new zmq.Subscriber()
+
+    this.beacon = new FlockConnection({
+      prefix: obj.beaconPrefix
+    })
     this.emitter = new EventEmitter()
     this.initialized = false
     this.initializedBeacon = false
-    this.beaconPrefix = obj.beaconprefix
+
     this.logger = createLogger({
       level: 'info',
       format: format.combine(
@@ -58,17 +59,15 @@ export class FlockBase {
     this.emitter.on(
       'beacon-connect',
       async (inobj: any): Promise<void> => {
-        let conport = inobj.data[0].toString()
-        let pubport = inobj.data[1].toString()
-        if (conport.match(/^[0-9]+$/)) {
-          conport = `${this.beaconPrefix}:${conport}`
-        }
-        if (pubport.match(/^[0-9]+$/)) {
-          pubport = `${this.beaconPrefix}:${pubport}`
-        }
+        const conport = inobj.data[0].toString()
+        const pubport = inobj.data[1].toString()
         try {
-          await this.beaconConnect(conport, pubport)
+          this.beacon.connect(conport, pubport)
           this.send(`connected to ${conport} ${pubport}`)
+          this.logger.log(
+            'info', 'beaconConnect %s %s',
+            conport, pubport
+          )
         } catch (e) {
           this.send(e)
         }
@@ -123,19 +122,6 @@ export class FlockBase {
   // --------------- beacon functions
 
   async beaconInitialize (): Promise<void> {
-    this.initializedBeacon = true
-  }
-
-  async beaconConnect (
-    beaconControl: string,
-    beaconPublisher: string
-  ) : Promise<void> {
-    this.beaconReqSock.connect(beaconControl)
-    this.beaconSubSock.connect(beaconPublisher)
-    this.logger.log(
-      'info', 'beaconConnect %s %s',
-      beaconControl, beaconPublisher
-    )
   }
 
   async beaconRun () : Promise<void> {
@@ -143,27 +129,13 @@ export class FlockBase {
       await this.beaconInitialize()
     }
     // eslint-disable-next-line no-unused-vars
-    for await (const [filter, msg] of this.beaconSubSock) {
+    for await (const [filter, msg] of this.beacon.subSock) {
       await this.beaconProcessTxn(filter.toString(), decode(msg))
     }
   }
 
   async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
     return true
-  }
-
-  async beaconSend (data: any): Promise<any> {
-    this.beaconReqSock.send(encode(data))
-    const [result] = await this.beaconReqSock.receive()
-    return decode(result)
-  }
-
-  async beaconSubscribe (data: string) {
-    this.beaconSubSock.subscribe(data)
-  }
-
-  async beaconUnsubscribe (data: string) {
-    this.beaconSubSock.unsubscribe(data)
   }
 
   static _yargs () {
