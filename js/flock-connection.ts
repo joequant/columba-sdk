@@ -1,12 +1,16 @@
 import * as zmq from 'zeromq'
 import { encode, decode } from '@msgpack/msgpack'
 
+/**
+ * Connection pair to flock
+ */
+
 export class FlockConnection {
   reqSock: zmq.Request
   subSock: zmq.Subscriber
-  prefix: string
-  conport: string | null
-  subport: string | null
+  private prefix: string
+  private conport: string | null
+  private subport: string | null
   constructor (
     obj: any
   ) {
@@ -43,12 +47,12 @@ export class FlockConnection {
     return decode(result)
   }
 
-  async subscribe (data: string) {
-    this.subSock.subscribe(data)
+  async subscribe (...data: Array<string>) {
+    this.subSock.subscribe(...data)
   }
 
-  async unsubscribe (data: string) {
-    this.subSock.unsubscribe(data)
+  async unsubscribe (...data: Array<string>) {
+    this.subSock.unsubscribe(...data)
   }
 
   async disconnect () {

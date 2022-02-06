@@ -5,9 +5,16 @@ import readline from 'readline'
 import JSON5 from 'json5'
 import { mySplit } from './flock-util'
 
+/**
+ * class for reading events from flock
+ *
+ * @param obj.subport - port to connect
+ * @param obj.subscribe - filter to subscribe
+ */
+
 export class FlockMonitor extends FlockBase {
-  readInput: boolean
-  rl
+  private readInput: boolean
+  private rl
   constructor (obj: any) {
     super(obj)
     this.rl = readline.createInterface({
@@ -21,10 +28,12 @@ export class FlockMonitor extends FlockBase {
     }
     if (obj.subscribe !== undefined) {
       this.beacon.subscribe(obj.subscribe.toString())
+    } else {
+      this.beacon.subscribe()
     }
   }
 
-  async initialize (): Promise<void> {
+  protected async initialize (): Promise<void> {
     process.on('uncaughtException', (err) => {
       this.send(err)
     })
@@ -48,11 +57,24 @@ export class FlockMonitor extends FlockBase {
         this.send(`subscribed to ${inobj.data}`)
       })
     this.emitter.on(
+      'subscribe-all',
+      async (inobj: any): Promise<void> => {
+        this.beacon.subscribe()
+        this.send(`subscribed to all`)
+      })
+    this.emitter.on(
       'unsubscribe',
       async (inobj: any): Promise<void> => {
         this.beacon.unsubscribe(inobj.data)
         this.send(`unsubscribed to ${inobj.data}`)
       })
+    this.emitter.on(
+      'unsubscribe-all',
+      async (inobj: any): Promise<void> => {
+        this.beacon.unsubscribe()
+        this.send(`unsubscribed to all`)
+      })
+
   }
 
   async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {

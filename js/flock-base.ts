@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 // SPDX-License-Identifier: MIT
 
+/**
+ * Base module for flocks
+ *
+ * @module
+ */
+
 import * as zmq from 'zeromq'
 import EventEmitter from 'events'
 import { encode, decode } from '@msgpack/msgpack'
@@ -9,17 +15,23 @@ import { hideBin } from 'yargs/helpers'
 import winston, { createLogger, format } from 'winston'
 import { FlockConnection } from './flock-connection'
 
-/** Base class for flocks */
+/** Base class for flocks
+ * @param obj.conport - address of control port
+ * @param obj.pubport - address of publish port
+ * @param obj.beaconprefix - prefix to add to numerical ports
+ */
+
 export class FlockBase {
-  repSockId: string
-  pubSockId: string
-  replySock: zmq.Reply
-  pubSock: zmq.Publisher
-  beacon: FlockConnection
-  logger: winston.Logger
-  initializedBeacon: boolean
-  emitter: EventEmitter
-  initialized: boolean
+  private repSockId: string
+  private pubSockId: string
+  private replySock: zmq.Reply
+  private pubSock: zmq.Publisher
+
+  protected initializedBeacon: boolean
+  protected initialized: boolean
+  protected beacon: FlockConnection
+  protected logger: winston.Logger
+  protected emitter: EventEmitter
 
   constructor (
     obj: any
@@ -45,7 +57,7 @@ export class FlockBase {
     })
   };
 
-  async initialize (): Promise<void> {
+  protected async initialize (): Promise<void> {
     this.initialized = true
     if (this.repSockId !== undefined) {
       await this.replySock.bind(this.repSockId)
@@ -82,6 +94,10 @@ export class FlockBase {
   version () : string {
     return 'FlockBase'
   }
+
+  /**
+   * begin event loop
+   */
 
   async run () : Promise<void> {
     if (!this.initialized) {
@@ -122,8 +138,12 @@ export class FlockBase {
 
   // --------------- beacon functions
 
-  async beaconInitialize (): Promise<void> {
+  protected async beaconInitialize (): Promise<void> {
   }
+
+  /**
+   * monitor beacon for new events
+   */
 
   async beaconRun () : Promise<void> {
     if (!this.initializedBeacon) {
@@ -139,7 +159,7 @@ export class FlockBase {
     return true
   }
 
-  static _yargs () {
+  protected static _yargs () {
     const me = this
     // eslint-disable-next-line no-unused-vars
     return yargs(hideBin(process.argv)).command(
