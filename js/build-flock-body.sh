@@ -14,7 +14,7 @@ cp -rf $script_dir/*.sh \
    $script_dir/.*.json $mountpoint/opt/$name
 
 buildah config --workingdir /opt/$name $container
-npm install
+buildah run $container npm install
 
 if [ -f $script_dir/build.sh ] ; then
     buildah run $container /opt/$name/build.sh $name
