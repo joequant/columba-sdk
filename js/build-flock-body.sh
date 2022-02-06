@@ -8,11 +8,10 @@ mountpoint=$(buildah mount $container)
 buildah config --label maintainer="$maintainer" $container
 
 mkdir -p $mountpoint/opt/$name
-cp -r $script_dir/*.sh \
+cp -rf $script_dir/*.sh \
    $script_dir/*.ts \
    $script_dir/*.json \
-   $script_dir/.*.json \
-   $script_dir/test $mountpoint/opt/$name
+   $script_dir/.*.json $mountpoint/opt/$name
 buildah run $container /opt/$name/build.sh $name
 
 # Entrypoint, too, is a “buildah config” command
