@@ -6,7 +6,7 @@ import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
 import { createLogger, format, transports } from 'winston'
 import JSON5 from 'json5'
-import { mySplit } from './flock-lib'
+import { mySplit } from './flock-util'
 import { FlockConnection } from './flock-connection'
 
 const myTransports = {

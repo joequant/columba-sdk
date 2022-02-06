@@ -3,7 +3,7 @@ import { FlockBase } from './flock-base'
 import winston from 'winston'
 import readline from 'readline'
 import JSON5 from 'json5'
-import { mySplit } from './flock-lib'
+import { mySplit } from './flock-util'
 
 export class FlockMonitor extends FlockBase {
   readInput: boolean

@@ -23,7 +23,7 @@ export function mySplit (
 
 /**
  * Check if is object
- * 
+ *
  * @param a - object to be checked
  */
 
