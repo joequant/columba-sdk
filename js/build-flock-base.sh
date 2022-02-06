@@ -10,7 +10,7 @@ name=flock-base-js
 
 # Labels are part of the "buildah config" command
 buildah config --label maintainer="Joseph C Wang <joe@pigeonchain.co>" $container
-buildah run $container dnf install -y --setopt=install_weak_deps=False tar gzip gcc make nodejs npm git
+buildah run $container dnf install -y --setopt=install_weak_deps=False tar gzip gcc make nodejs npm git yum
 
 # Entrypoint, too, is a “buildah config” command
 buildah config --port 3000/tcp $container
