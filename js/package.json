@@ -5,9 +5,8 @@
         "build": "tsc --build",
         "build-flock": "buildah unshare ./build-flock-base.sh",
         "clean": "tsc --build --clean",
-        "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json",
+        "distclean": "rm -fr *~ node_modules store *.js *.log *-lock.json *.map",
         "lint": "eslint --fix *.ts test/*.ts",
-        "start": "./server.js &",
         "test": "mocha --exit"
     },
     "bin": {
