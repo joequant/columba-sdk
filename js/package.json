@@ -10,8 +10,8 @@
       "test": "mocha test/**/*.ts --exit --require ts-node/register"
     },
     "bin": {
-        "flock-cli": "./dist/src/flock-cli.js",
-        "flock-monitor": "./dist/src/flock-monitor.js"
+        "flock-cli": "./dist/flock-cli.js",
+        "flock-monitor": "./dist/flock-monitor.js"
     },
   "main": "dist/index",
   "typings": "dist/index",
