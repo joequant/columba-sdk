@@ -8,8 +8,8 @@
     "distclean": "rm -rf node_modules *-lock.json ; npm run distclean --workspaces --if-present"
   },
   "bin": {
-    "flock-cli": "./js/dist/src/flock-cli.js",
-    "flock-monitor": "./js/dist/src/flock-monitor.js"
+    "flock-cli": "./js/dist/flock-cli.js",
+    "flock-monitor": "./js/dist/flock-monitor.js"
   },
   "workspaces": [
     "js"
