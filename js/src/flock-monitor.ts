@@ -60,7 +60,7 @@ export class FlockMonitor extends FlockBase {
       'subscribe-all',
       async (inobj: any): Promise<void> => {
         this.beacon.subscribe()
-        this.send(`subscribed to all`)
+        this.send('subscribed to all')
       })
     this.emitter.on(
       'unsubscribe',
@@ -72,9 +72,8 @@ export class FlockMonitor extends FlockBase {
       'unsubscribe-all',
       async (inobj: any): Promise<void> => {
         this.beacon.unsubscribe()
-        this.send(`unsubscribed to all`)
+        this.send('unsubscribed to all')
       })
-
   }
 
   override async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
