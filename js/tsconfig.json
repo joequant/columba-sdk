@@ -9,5 +9,5 @@
     "sourceMap": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*", "index.ts", "test/test.ts"]
+  "include": ["index.ts", "test/test.ts"]
 }
