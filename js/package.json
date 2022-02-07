@@ -10,8 +10,8 @@
         "test": "mocha --exit dist/test/*.js"
     },
     "bin": {
-        "flock-cli": "./dist/flock-cli.js",
-        "flock-monitor": "./dist/flock-monitor.js"
+        "flock-cli": "./dist/src/flock-cli.js",
+        "flock-monitor": "./dist/src/flock-monitor.js"
     },
     "main": "dist/index.js",
     "dependencies": {
