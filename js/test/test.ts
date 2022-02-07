@@ -1,5 +1,5 @@
-import { FlockBase } from '../flock-base'
-import { FlockCli } from '../flock-cli'
+import { FlockBase } from '..'
+import { FlockCli } from '..'
 import assert from 'assert'
 
 describe('FlockBase', function () {

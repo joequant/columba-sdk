@@ -33,7 +33,7 @@ export class FlockMonitor extends FlockBase {
     }
   }
 
-  protected async initialize (): Promise<void> {
+  override async initialize (): Promise<void> {
     process.on('uncaughtException', (err) => {
       this.send(err)
     })
@@ -77,16 +77,16 @@ export class FlockMonitor extends FlockBase {
 
   }
 
-  async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
+  override async beaconProcessTxn (filter: string, inobj: any) : Promise<boolean> {
     this.logger.log('info', filter, inobj)
     return true
   }
 
-  version () : string {
+  override version () : string {
     return 'FlockMonitor'
   }
 
-  async send (data: any) {
+  override async send (data: any) {
     console.log(data)
   }
 
@@ -123,7 +123,7 @@ export class FlockMonitor extends FlockBase {
     })
   }
 
-  async run () : Promise<void> {
+  override async run () : Promise<void> {
     if (!this.initialized) {
       await this.initialize()
     }
@@ -131,7 +131,7 @@ export class FlockMonitor extends FlockBase {
     await this.readline()
   }
 
-  static runServer () : void {
+  static override runServer () : void {
     // eslint-disable-next-line no-unused-vars
     const argv = this._yargs().default(
       {
