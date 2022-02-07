@@ -13,7 +13,8 @@
         "flock-cli": "./dist/src/flock-cli.js",
         "flock-monitor": "./dist/src/flock-monitor.js"
     },
-    "main": "dist/index.js",
+  "main": "dist/index",
+  "typings": "dist/index",
     "dependencies": {
         "@msgpack/msgpack": "^2.7.1",
         "json5": "^2.2.0",
