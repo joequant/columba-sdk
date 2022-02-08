@@ -119,11 +119,11 @@ export class FlockBase {
     return this.emitter.emit(inobj.cmd, inobj)
   }
 
-  async send (data: any) {
+  async send (data: unknown) {
     this.replySock.send(encode(data))
   }
 
-  async publish (filter: string, data: any) {
+  async publish (filter: string, data: unknown) {
     this.pubSock.send([filter, encode(data)])
   }
 
