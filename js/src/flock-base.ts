@@ -139,6 +139,7 @@ export class FlockBase {
   // --------------- beacon functions
 
   protected async beaconInitialize (): Promise<void> {
+    // empty function
   }
 
   /**
@@ -160,15 +161,15 @@ export class FlockBase {
   }
 
   protected static _yargs () {
-    const me = this
     // eslint-disable-next-line no-unused-vars
     return yargs(hideBin(process.argv)).command(
       '$0 [port]',
       'the default command',
       (yargs: any) => {
+        // do nothing
       },
       (argv: any) => {
-        me.startup(argv)
+        this.startup(argv)
       })
   }
 

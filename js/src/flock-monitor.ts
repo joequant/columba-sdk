@@ -90,8 +90,7 @@ export class FlockMonitor extends FlockBase {
   }
 
   async readline (): Promise<void> {
-    const me = this
-    this.rl.question('Monitor> ', async function (answer) {
+    this.rl.question('Monitor> ', async (answer) => {
       const [cmdfull, datafull] = mySplit(answer, ' ', 2)
       const [cmd, subcmd] = mySplit(cmdfull, '.', 2)
       let data
@@ -106,18 +105,18 @@ export class FlockMonitor extends FlockBase {
         data = datafull
       }
       try {
-        if (!await me.processTxn({
+        if (!await this.processTxn({
           cmd: cmd,
           subcmd: subcmd,
           data: data
         })) {
-          me.send('unknown command')
+          this.send('unknown command')
         }
       } catch (e) {
-        me.send(e)
+        this.send(e)
       }
-      if (me.readInput) {
-        me.readline()
+      if (this.readInput) {
+        this.readline()
       }
     })
   }

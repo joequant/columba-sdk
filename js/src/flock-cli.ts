@@ -115,16 +115,15 @@ export class FlockCli {
     }
   }
 
-  async portList (): Promise<Object> {
+  async portList (): Promise<any> {
     return Object.fromEntries(this.ports)
   }
 
   async readline (): Promise<void> {
-    const me = this
-    this.rl.question('Cli> ', async function (answer) {
-      console.log(await me.send(answer))
-      if (me.readInput) {
-        me.readline()
+    this.rl.question('Cli> ', async (answer) => {
+      console.log(await this.send(answer))
+      if (this.readInput) {
+        this.readline()
       }
     })
   }

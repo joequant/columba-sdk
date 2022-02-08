@@ -10,8 +10,7 @@ buildah config --label maintainer="$maintainer" $container
 mkdir -p $mountpoint/opt/$name
 cp -rf $script_dir/*.sh \
    $script_dir/src \
-   $script_dir/*.json \
-   $script_dir/.*.json $mountpoint/opt/$name
+   $script_dir/*.json $mountpoint/opt/$name
 
 buildah config --workingdir /opt/$name $container
 buildah run $container npm install

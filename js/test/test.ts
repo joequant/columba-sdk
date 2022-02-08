@@ -14,8 +14,6 @@ describe('FlockBase', function () {
     app.run()
     await cli.portConnect('default', 'tcp://127.0.0.1:3000')
   })
-  after(function () {
-  })
 
   describe('test1', function () {
     it('processTxn', async () => {
