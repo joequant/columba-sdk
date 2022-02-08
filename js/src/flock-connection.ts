@@ -41,7 +41,7 @@ export class FlockConnection {
     }
   }
 
-  async send (data: any): Promise<any> {
+  async send (data: unknown): Promise<any> {
     this.reqSock.send(encode(data))
     const [result] = await this.reqSock.receive()
     return decode(result)
