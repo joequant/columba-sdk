@@ -1,12 +1,12 @@
 {
     "name": "columba-sdk-js",
     "scripts": {
-        "prepare": "tsc --build",
+        "prepare": "npm run build",
         "build": "tsc --build",
         "build-flock": "buildah unshare ./build-flock-base.sh",
         "clean": "tsc --build --clean",
         "distclean": "rm -fr *~ node_modules store *.log *-lock.json dist",
-        "lint": "eslint --fix *.ts test/**/*.ts src/**/*.ts",
+        "lint": "eslint --fix test/**/*.ts src/**/*.ts",
       "test": "mocha test/**/*.ts --exit --require ts-node/register"
     },
     "bin": {
