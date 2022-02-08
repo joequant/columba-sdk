@@ -78,15 +78,12 @@ export class FlockCli {
     if (this.sockList.get(port) === undefined) {
       return 'no connection'
     }
-    const mySock = this.sockList.get(port)
-    if (mySock !== undefined) {
-      const result = await mySock.send({
-        cmd: cmd,
-        subcmd: subcmd,
-        data: data
-      })
-      return result
-    }
+    const result = await this.sockList.get(port)?.send({
+      cmd: cmd,
+      subcmd: subcmd,
+      data: data
+    })
+    return result
   }
 
   async portConnect (name: string, port: string): Promise<any> {
