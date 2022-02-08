@@ -55,7 +55,7 @@ export class FlockBase {
         format.simple()
       )
     })
-  };
+  }
 
   protected async initialize (): Promise<void> {
     this.initialized = true
